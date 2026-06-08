@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+venv/
+env/
+.env
+.env.*
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Claude
+CLAUDE.md
+
+# Training outputs / logs
+outputs/
+wandb/
+lightning_logs/
+checkpoints/
+*.ckpt
+*.log
+
+# Large local artifacts (keep data out of git unless using Git LFS intentionally)
+*.h5
+*.hdf5
+data/
+

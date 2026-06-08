@@ -1,0 +1,36 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#$ -N create_s30_split
+#$ -l tmem=60G
+#$ -l h_rt=72:00:00
+#$ -j y
+#$ -m b
+#$ -l hostname=ned.local
+#$ -q cpu.q
+#$ -M zcbteya@ucl.ac.uk
+
+set -e
+
+echo "========================================"
+echo "Job started on host: $(hostname)"
+echo "Start time: $(date)"
+echo "========================================"
+
+# Activate virtual environment
+source /SAN/orengolab/functional-families/janu/contrasted-ff/.venv/bin/activate
+
+export PATH="/SAN/orengolab/functional-families/tools/mmseqs/bin:$PATH"
+export PYTHONUNBUFFERED=1
+
+# Run split job
+python /SAN/orengolab/functional-families/janu/contrasted-ff/scripts/create_s30_split.py \
+  --fasta /SAN/orengolab/functional-families/janu/contrasted-ff/funfams_deduped_s100.fasta \
+  --assignments /SAN/orengolab/functional-families/janu/data/duplicates_removed-funfams-4.3-c123-mapping.txt \
+  --output_dir /SAN/orengolab/functional-families/janu/data/s30_split \
+  --test_size 5000 \
+  --val_size 1000
+
+echo "========================================"
+echo "Job finished at: $(date)"
+echo "========================================"

@@ -1,0 +1,6 @@
+# Supervised Contrastive Learning configuration
+
+model:
+  loss_type: supcon
+  loss_params:
+    temperature: 0.07

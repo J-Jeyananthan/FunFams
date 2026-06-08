@@ -1,0 +1,52 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#$ -N funfam_baseline
+#$ -l tmem=26G
+#$ -l h_rt=10:00:00
+#$ -l gpu=true
+#$ -l h=bubba-213-1
+#$ -j y
+#$ -m b
+#$ -M zcbteya@ucl.ac.uk
+
+set -e
+
+echo "========================================"
+echo "Job started on host: $(hostname)"
+echo "Start time: $(date)"
+echo "========================================"
+
+# Activate virtual environment
+source /SAN/orengolab/functional-families/janu/contrasted-ff/.venv/bin/activate
+
+# Sanity checks
+echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
+nvidia-smi
+
+# Make Python output unbuffered (set BEFORE running python)
+export PYTHONUNBUFFERED=1
+
+# Force both Intel (libiomp5) and GNU (libgomp) OMP runtimes to use multiple
+# threads. Must be set before Python starts so both runtimes are initialised
+# correctly. Without this, PyTorch's libiomp5 overrides FAISS's libgomp and
+# the FAISS search runs single-threaded despite omp_get_max_threads() = 48.
+export OMP_NUM_THREADS=16
+export MKL_NUM_THREADS=16
+export KMP_NUM_THREADS=16
+export OPENBLAS_NUM_THREADS=16
+export GOMP_NUM_THREADS=16
+export KMP_BLOCKTIME=0
+
+# Redirect wandb cache off home (quota issues)
+export WANDB_CACHE_DIR=/SAN/orengolab/functional-families/janu/contrasted-ff/.wandb_cache
+
+# Run training job
+cd /SAN/orengolab/functional-families/janu/contrasted-ff/src
+python train.py run.eval_only=true "run.ckpt_path='/SAN/orengolab/functional-families/janu/contrasted-ff/src/outputs/funfam_training/2026-02-09/23-51-18/checkpoints/epoch=311-step=2443896.ckpt'"
+
+
+
+echo "========================================"
+echo "Job finished at: $(date)"
+echo "========================================"

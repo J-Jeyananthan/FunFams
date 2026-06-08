@@ -1,0 +1,111 @@
+defaults:
+  - _self_
+  - experiment: supcon
+
+seed: 42
+
+# Data Configuration
+paths:
+  train_fasta: /SAN/orengolab/functional-families/janu/contrasted-ff/train_deduped.fasta
+  val_fasta: /SAN/orengolab/functional-families/janu/contrasted-ff/val_deduped.fasta
+  embedding_file: /SAN/orengolab/functional-families/janu/contrasted-ff/funfams-4.3-c123.lmdb
+  label_file: /SAN/orengolab/functional-families/janu/data/duplicates_removed-funfams-4.3-c123-mapping.txt
+
+data:
+  batch_size: 1024
+  num_workers: 0
+  pin_memory: true
+
+datamodule:
+  _target_: data.FunfamDataModule
+  train_fasta: ${paths.train_fasta}
+  val_fasta: ${paths.val_fasta}
+  label_file: ${paths.label_file}
+  embedding_file: ${paths.embedding_file}
+  cache_embeddings: false
+  batch_size: ${data.batch_size}
+  num_workers: ${data.num_workers}
+  pin_memory: ${data.pin_memory}
+
+# Model Configuration
+model:
+  _target_: model.FunfamSupConModel
+  _recursive_: false
+  num_classes: null
+  input_dim: 1024
+  proj_hidden_dims: [1024]
+  proj_output_dim: 128
+  dropout: 0.2
+  loss_type: proxy_anchor
+  loss_params:
+    temperature: 0.07
+    alpha: 32
+    margin: 0.2
+  learning_rate: ${learning.lr}
+  weight_decay: ${learning.weight_decay}
+  epochs: ${trainer.max_epochs}
+  num_warmup_epochs: ${learning.num_warmup_epochs}
+  min_lr: ${learning.eta_min}
+  eps: 1e-8
+  betas: [0.9, 0.999]
+
+# Optimization Configuration
+learning:
+  lr: 0.001
+  weight_decay: 0.0001
+  num_warmup_epochs: 20
+  eta_min: 0.000001
+
+# Training Configuration
+trainer:
+  max_epochs: 1000
+  accelerator: auto
+  devices: auto
+  precision: 16-mixed
+  gradient_clip_val: 1.0
+  deterministic: true
+  log_every_n_steps: 10
+  val_check_interval: 1.0
+  enable_progress_bar: true
+  enable_model_summary: true
+  default_root_dir: ${hydra:run.dir}
+  limit_train_batches: null
+  limit_val_batches: null
+
+# Logging & Callbacks
+logging:
+  logger:
+    _target_: lightning.pytorch.loggers.WandbLogger
+    project: funfam_contrasted
+    entity: null  # Set via WANDB_ENTITY env var or override here
+    name: null # Set via WANDB_NAME env var or override here
+    offline: false
+    save_dir: ${hydra:run.dir}/wandb
+  callbacks:
+    - _target_: lightning.pytorch.callbacks.ModelCheckpoint
+      monitor: val/loss
+      mode: min
+      save_top_k: 1
+      dirpath: ${hydra:run.dir}/checkpoints
+    - _target_: lightning.pytorch.callbacks.EarlyStopping
+      monitor: val/loss
+      mode: min
+      patience: 15
+      min_delta: 0.0001
+    - _target_: lightning.pytorch.callbacks.LearningRateMonitor
+      logging_interval: step
+      
+
+# Execution
+run:
+  do_test_after_fit: false
+  eval_only: false
+  ckpt_path: null
+
+# Hydra
+hydra:
+  run:
+    dir: outputs/funfam_training/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    name: ${hydra:runtime.choices.experiment}
+    chdir: false

@@ -1,0 +1,49 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#$ -N embed_HUPs_prostt5
+#$ -l tmem=26G
+#$ -l h_rt=10:00:00
+#$ -l gpu=true
+#$ -l h=bubba-213-1
+#$ -j y
+
+echo "========================================"
+echo "Job started on host: $(hostname)"
+echo "Start time: $(date)"
+echo "========================================"
+
+# Activate virtual environment
+source /SAN/orengolab/functional-families/janu/contrasted-ff/.venv/bin/activate
+
+# Sanity checks
+echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
+nvidia-smi
+python - <<'EOF'
+import torch
+print("CUDA available:", torch.cuda.is_available())
+print("CUDA device count:", torch.cuda.device_count())
+EOF
+
+# Run embedding job
+CUDA_VISIBLE_DEVICES=0 \
+python embed-david.py \
+  -i /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/HUPs_mmseqs_s90_3.40.50.620/HUPs_mmseqs_s90_3.40.50.620_rep_seq.fasta \
+  -o /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/HUPs_mmseqs_s90_3.40.50.620/experiments/HUPs_mmseqs_s90_3.40.50.620_rep_seq.lmdb \
+  --model Rostlab/ProstT5 \
+  --split_char '!' \
+  --id 0 \
+  --per_protein 1 \
+  --half 1 \
+  --is_3Di 0 \
+  --max_seq_len 1280 \
+  --max_residues 12000 \
+  --max_batch 128 \
+  --bucket_size 10000 \
+  --commit_every 20000 \
+  --map_size_gb 4 \
+  --sync_every_secs 600
+
+echo "========================================"
+echo "Job finished at: $(date)"
+echo "========================================"

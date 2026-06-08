@@ -1,0 +1,38 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#$ -N extract_embeddings
+#$ -l tmem=26G
+#$ -l h_rt=1:00:00
+#$ -l gpu=true
+#$ -l h=bubba-213-2
+#$ -j y
+
+set -e
+
+echo "========================================"
+echo "Job started on host: $(hostname)"
+echo "Start time: $(date)"
+echo "========================================"
+
+# Activate virtual environment
+source /SAN/orengolab/functional-families/janu/contrasted-ff/.venv/bin/activate
+
+# Sanity checks
+echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
+nvidia-smi
+
+export PYTHONUNBUFFERED=1
+
+# Run extraction
+CUDA_VISIBLE_DEVICES=0 \
+python /SAN/orengolab/functional-families/janu/contrasted-ff/scripts/extract_embeddings.py \
+  --checkpoint /SAN/orengolab/functional-families/janu/contrasted-ff/src/outputs/funfam_training/2026-04-01/05-55-57/checkpoints/epoch=280-step=902010.ckpt \
+  --lmdb_path /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/3.20.20.70/3.20.20.70_sc_reps_esm2.lmdb \
+  --fasta /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/3.20.20.70/3.20.20.70_sc_reps.fasta \
+  --output_dir /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/3.20.20.70/esm2_contrastive_deduped \
+  --embedding_dim 1280
+
+echo "========================================"
+echo "Job finished at: $(date)"
+echo "========================================"

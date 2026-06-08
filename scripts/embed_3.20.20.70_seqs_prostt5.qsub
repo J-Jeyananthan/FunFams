@@ -1,0 +1,58 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#$ -N embed_3.20.20.70_seqs_prostt5
+#$ -l tmem=16G
+#$ -l h_rt=4:00:00
+#$ -l gpu=true
+#$ -l h=bubba-213-1
+#$ -j y
+
+set -e
+
+echo "========================================"
+echo "Job started on host: $(hostname)"
+echo "Start time: $(date)"
+echo "========================================"
+
+# Activate virtual environment
+source /SAN/orengolab/functional-families/janu/contrasted-ff/.venv/bin/activate
+
+# Sanity checks
+echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
+nvidia-smi
+
+export PYTHONUNBUFFERED=1
+
+# Redirect HuggingFace cache off home (quota issues)
+export HF_HOME=/SAN/orengolab/functional-families/janu/.hf_cache
+export TRANSFORMERS_CACHE=/SAN/orengolab/functional-families/janu/.hf_cache
+
+# Step 1: Generate ProstT5 embeddings into LMDB
+CUDA_VISIBLE_DEVICES=1 \
+python /SAN/orengolab/functional-families/janu/contrasted-ff/scripts/embed-david.py \
+  -i /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/3.20.20.70/3.20.20.70_sc_seqs.fasta \
+  -o /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/3.20.20.70/3.20.20.70_sc_seqs_prostt5.lmdb \
+  --model Rostlab/ProstT5 \
+  --split_char '!' \
+  --id 0 \
+  --per_protein 1 \
+  --half 1 \
+  --is_3Di 0 \
+  --max_seq_len 1280 \
+  --max_residues 12000 \
+  --max_batch 128 \
+  --map_size_gb 1 \
+  --bucket_size 4000 \
+  --commit_every 4000 \
+  --sync_every_secs 600
+
+# Step 2: Convert LMDB to .pt (ProstT5 embeddings are 1024-dim)
+python /SAN/orengolab/functional-families/janu/contrasted-ff/scripts/lmdb_to_pt.py \
+  --lmdb_path /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/3.20.20.70/3.20.20.70_sc_seqs_prostt5.lmdb \
+  --output    /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/3.20.20.70/3.20.20.70_sc_seqs_prostt5.pt \
+  --emb_dim   1024
+
+echo "========================================"
+echo "Job finished at: $(date)"
+echo "========================================"

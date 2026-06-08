@@ -1,0 +1,25 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#$ -N extract_raw_prostt5
+#$ -l tmem=26G
+#$ -l h_rt=1:00:00
+#$ -j y
+
+echo "========================================"
+echo "Job started on host: $(hostname)"
+echo "Start time: $(date)"
+echo "========================================"
+
+source /SAN/orengolab/functional-families/janu/contrasted-ff/.venv/bin/activate
+
+export PYTHONUNBUFFERED=1
+
+python /SAN/orengolab/functional-families/janu/contrasted-ff/scripts/extract_raw_prostt5.py \
+  --lmdb_path /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/HUPs_mmseqs_s90_3.40.50.620/experiments/HUPs_mmseqs_s90_3.40.50.620_rep_seq.lmdb \
+  --fasta /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/HUPs_mmseqs_s90_3.40.50.620/HUPs_mmseqs_s90_3.40.50.620_rep_seq.fasta \
+  --output_dir /SAN/orengolab/functional-families/janu/contrasted-ff/HUPs_data/HUPs_mmseqs_s90_3.40.50.620/experiments/prostt5/
+
+echo "========================================"
+echo "Job finished at: $(date)"
+echo "========================================"
