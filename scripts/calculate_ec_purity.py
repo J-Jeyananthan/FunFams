@@ -1,7 +1,22 @@
+"""Calculate EC4 and EC3 purity metrics for a directory of FunFam .faa files.
+
+For each FunFam containing at least one EC-annotated sequence, computes EC4 purity
+(proportion of sequences sharing the dominant EC4 annotation) and EC3 purity.
+Prints summary statistics including average purity, threshold percentages, and
+EC term distribution per FunFam.
+
+Usage:
+    python scripts/calculate_ec_purity.py \
+        --ec-file ec_annotations.csv \
+        --funfams-dir output/hdbscan_results/
+"""
+
 import os
 import click
 
+
 def read_ec_file(ec_file_path):
+    """Return {uniprot_id: set(ec_terms)} from a CSV file with columns uniprot_id,ec_term."""
     ec_annotations = {}
     with open(ec_file_path, "r") as ec_file:
         for line in ec_file:
@@ -9,7 +24,9 @@ def read_ec_file(ec_file_path):
             ec_annotations.setdefault(uniprot_id, set()).add(ec_term)
     return ec_annotations
 
+
 def calculate_purities(ec_terms):
+    """Return (ec4_purity, ec3_purity) for a list of EC terms from a single FunFam."""
     ec_counts = {ec: ec_terms.count(ec) for ec in set(ec_terms)}
     most_common_ec4 = max(ec_counts, key=ec_counts.get)
     most_common_ec3 = max(

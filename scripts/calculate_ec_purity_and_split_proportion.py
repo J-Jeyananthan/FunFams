@@ -19,6 +19,7 @@ import click
 
 
 def read_ec_file(ec_file_path):
+    """Return {uniprot_id: set(ec_terms)} from a CSV file with columns uniprot_id,ec_term."""
     ec_annotations = {}
     with open(ec_file_path, "r") as ec_file:
         for line in ec_file:
@@ -26,7 +27,9 @@ def read_ec_file(ec_file_path):
             ec_annotations.setdefault(uniprot_id, set()).add(ec_term)
     return ec_annotations
 
+
 def calculate_purities(ec_terms):
+    """Return (ec4_purity, ec3_purity) for a list of EC terms from a single FunFam."""
     ec_counts = {ec: ec_terms.count(ec) for ec in set(ec_terms)}
     most_common_ec4 = max(ec_counts, key=ec_counts.get)
     most_common_ec3 = max(

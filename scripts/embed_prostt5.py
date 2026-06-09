@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
-Generate ProstT5 embeddings for protein sequences in FASTA format and store in a single LMDB.
-Includes resume support: on rerun, skips IDs already present in LMDB.
+Generate ProstT5 embeddings for protein sequences in FASTA format and store in LMDB.
+
+Streams FASTA input (no full-file load), embeds using the ProstT5 encoder on a single GPU,
+and writes mean-pooled float16 embeddings to an LMDB database. Resume-safe: reruns skip
+sequences already present in the LMDB.
 
 Key behaviors:
 - Streams FASTA (no full-file load)

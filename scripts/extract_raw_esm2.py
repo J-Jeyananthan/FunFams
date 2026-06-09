@@ -1,11 +1,13 @@
-"""Convert a HUPs LMDB (float16 ESM2 embeddings) to .pt format.
+"""Export ESM2 embeddings from LMDB to .pt format for use with hdbscan_benchmark.py.
 
-Output format matches eMMA: list of dicts with 'label' and 'mean_representations' keys.
+Reads all embeddings from an LMDB database and saves them as a list of dicts with
+'label' and 'mean_representations' keys, matching the format expected by hdbscan_benchmark.py.
 
 Usage:
-    python scripts/lmdb_to_pt.py \
+    python scripts/extract_raw_esm2.py \
         --lmdb_path path/to/embeddings.lmdb \
-        --output path/to/output.pt
+        --output path/to/output.pt \
+        --emb_dim 1280
 """
 
 import argparse
