@@ -41,7 +41,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-faiss = ["faiss-cpu==1.9.0"]
 embeddings = ["transformers>=4.30.0"]
 dev = [
     "pytest>=7.0.0",
@@ -49,7 +48,7 @@ dev = [
 ]
 
 [tool.setuptools]
-py-modules = ["data", "model", "losses", "callbacks", "utils", "faiss_utils", "train"]
+py-modules = ["data", "model", "losses", "utils", "train"]
 package-dir = {"" = "src"}
 
 [tool.ruff]

@@ -23,8 +23,6 @@ Benchmarks span three CATH superfamilies: HUPs (3.40.50.620), aldolases (3.20.20
 │   ├── model.py                # ProjectionHead (MLP) + FunfamSupConModel (LightningModule)
 │   ├── data.py                 # LMDB-backed dataset and DataModule
 │   ├── losses.py               # SupConLoss and ProxyAnchorLoss implementations
-│   ├── callbacks.py            # Evaluation callbacks (not used in current pipeline)
-│   ├── faiss_utils.py          # FAISS index build/search utilities (optional)
 │   └── utils.py                # Seed, FASTA parsing, label loading helpers
 ├── configs/
 │   ├── train.yaml              # Main Hydra config (data paths, model, training)
@@ -66,8 +64,6 @@ uv pip install -e .
 # Add embedding generation dependencies (transformers for ProstT5/ESM2)
 uv pip install -e ".[embeddings]"
 
-# Optional: FAISS for k-NN evaluation
-uv pip install -e ".[faiss]"
 ```
 
 Alternatively, with standard pip:
