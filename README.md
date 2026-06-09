@@ -40,7 +40,8 @@ Benchmarks span three CATH superfamilies: HUPs (3.40.50.620), aldolases (3.20.20
 │   ├── count_funfam_sizes.py   # FunFam size distribution statistics (Figure 5, Table 1)
 │   ├── datasplit.py            # Train/validation split for contrastive training
 │   ├── extract_embeddings.py   # Project embeddings through trained model → .pt
-│   └── *.qsub                  # HPC job scripts (SGE scheduler, UCL cluster)
+│   ├── hpc/                    # HPC job scripts (SGE scheduler, UCL cluster)
+│   │   └── *.qsub
 └── pyproject.toml
 ```
 
@@ -115,7 +116,7 @@ python scripts/embed-esm2.py \
     --per_protein 1 --half 1
 ```
 
-On the UCL HPC cluster, embedding jobs were submitted via the `.qsub` scripts in `scripts/` (e.g. `embed_3.20.20.70_prostt5.qsub`).
+On the UCL HPC cluster, embedding jobs were submitted via the `.qsub` scripts in `scripts/hpc/` (e.g. `embed_3.20.20.70_prostt5.qsub`).
 
 ### Step 2 — Export embeddings to .pt format (for HDBSCAN input)
 
@@ -231,4 +232,4 @@ Training uses proxy anchor loss (margin=0.2, α=32) with AdamW (lr=0.001, weight
 
 ## HPC job scripts
 
-The `scripts/*.qsub` files are SGE job submission scripts for the UCL HPC cluster (A40/A10 GPUs). They document the exact commands and resource requests used for all embedding and training jobs. They require adaptation of file paths to run outside the UCL environment.
+The `scripts/hpc/*.qsub` files are SGE job submission scripts for the UCL HPC cluster (A40/A10 GPUs). They document the exact commands and resource requests used for all embedding and training jobs. They require adaptation of file paths to run outside the UCL environment.
