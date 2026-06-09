@@ -42,6 +42,14 @@ Benchmarks span three CATH superfamilies: HUPs (3.40.50.620), aldolases (3.20.20
 │   ├── extract_embeddings.py   # Project embeddings through trained model → .pt
 │   ├── hpc/                    # HPC job scripts (SGE scheduler, UCL cluster)
 │   │   └── *.qsub
+├── results/
+│   ├── All_FunFam_Figures.ipynb  # Plotting code for Figures 3–6
+│   ├── FunFam_Figure_3.png       # EC4 purity: ProstT5 vs ESM2 vs eMMA
+│   ├── FunFam_Figure_4.png       # EC4 purity across superfamilies
+│   ├── FunFam_Figure_5.png       # FunFam size distribution
+│   ├── FunFam_Figure_6.png       # EC term fragmentation (split count CCDF)
+│   ├── FunFam_Figure_7.png       # Contrastive learning evaluation
+│   └── README.md                 # Figure descriptions and report cross-references
 └── pyproject.toml
 ```
 

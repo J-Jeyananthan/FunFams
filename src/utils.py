@@ -25,16 +25,16 @@ def set_seed(seed: int = 42, deterministic: bool = True):
 
 
 def fasta_to_h5_key(header: str) -> str:
-    """Convert FASTA header to HDF5 key format.
-    
+    """Convert FASTA header to LMDB key format.
+
     FASTA: >A0A151J9E7/282-311
-    H5:    A0A151J9E7_282-311
+    LMDB:  A0A151J9E7_282-311
     """
     return header.strip().lstrip('>').replace('/', '_')
 
 
 def load_h5_keys_from_fasta(fasta_path: Path) -> List[str]:
-    """Read FASTA file and return list of HDF5 keys."""
+    """Read FASTA file and return list of LMDB keys."""
     h5_keys = []
     with open(fasta_path, "r") as f:
         for line in f:

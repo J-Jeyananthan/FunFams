@@ -94,8 +94,6 @@ class FunfamEmbeddingDataset(Dataset):
                         )
             logger.info(f"LMDB warmup complete: {bytes_read / (1024**3):.1f} GB read into page cache")
 
-        print(f"✅ cache_embeddings = {cache_embeddings}")
-
         # Optionally cache embeddings in memory
         if cache_embeddings:
             self._embedding_cache = {}
