@@ -88,7 +88,8 @@ All sequence data is from **CATHv4.3**. Due to their size, raw sequences, embedd
 
 | Dataset | Location (UCL HPC) | Description |
 |---|---|---|
-| Training sequences (8.6M) | `/SAN/orengolab/functional-families/janu/contrasted-ff/` | Seed FunFams from MARC, deduplicated |
+| Seed FunFam sequences | `/SAN/orengolab/functional-families/janu/contrasted-ff/` | 8,614,126 sequences from MARC seed FunFams (pre-deduplication) |
+| Training / validation FASTA | `/SAN/orengolab/functional-families/janu/contrasted-ff/train_deduped.fasta`, `val_deduped.fasta` | 3,286,761 training / 172,976 validation after deduplication via Seqkit |
 | ProstT5 LMDB (training) | `/SAN/orengolab/functional-families/janu/contrasted-ff/funfams-4.3-c123.lmdb` | Float16, 1024-dim |
 | ESM2 LMDB (training) | `/SAN/orengolab/functional-families/janu/contrasted-ff/funfams-4.3-c123-esm2.lmdb` | Float16, 1280-dim |
 | FunFam label mapping | `/SAN/orengolab/functional-families/janu/data/duplicates_removed-funfams-4.3-c123-mapping.txt` | domain_id → FunFam label |
