@@ -31,9 +31,9 @@ Benchmarks span three CATH superfamilies: HUPs (3.40.50.620), aldolases (3.20.20
 │       └── supcon.yaml         # Supervised contrastive loss override
 ├── scripts/
 │   ├── embed_prostt5.py        # Generate ProstT5 embeddings → LMDB
-│   ├── embed-esm2.py           # Generate ESM2 embeddings → LMDB
+│   ├── embed_esm2.py           # Generate ESM2 embeddings → LMDB
 │   ├── extract_raw_prostt5.py  # Export ProstT5 embeddings from LMDB → .pt
-│   ├── lmdb_to_pt.py           # Export ESM2 embeddings from LMDB → .pt
+│   ├── extract_raw_esm2.py     # Export ESM2 embeddings from LMDB → .pt
 │   ├── hdbscan_benchmark.py    # HDBSCAN clustering + EC purity evaluation
 │   ├── calculate_ec_purity.py  # EC4/EC3 purity metrics (called by hdbscan_benchmark.py)
 │   ├── calculate_ec_purity_and_split_proportion.py  # Purity + EC term split count analysis (Figure 6)
@@ -109,7 +109,7 @@ python scripts/embed_prostt5.py \
 
 **ESM2-650M** (used for HDBSCAN baseline and contrastive training):
 ```bash
-python scripts/embed-esm2.py \
+python scripts/embed_esm2.py \
     --input sequences.fasta \
     --output embeddings.lmdb \
     --model facebook/esm2_t33_650M_UR50D \
@@ -128,7 +128,7 @@ python scripts/extract_raw_prostt5.py \
     --output_dir output/
 
 # ESM2 baseline embeddings
-python scripts/lmdb_to_pt.py \
+python scripts/extract_raw_esm2.py \
     --lmdb_path embeddings.lmdb \
     --output output/embeddings_esm2.pt
 ```
@@ -205,7 +205,7 @@ python scripts/hdbscan_benchmark.py \
 
 | Report section | Relevant scripts / configs |
 |---|---|
-| Methods: Embedding generation | `scripts/embed_prostt5.py`, `scripts/embed-esm2.py`, `.qsub` files |
+| Methods: Embedding generation | `scripts/embed_prostt5.py`, `scripts/embed_esm2.py`, `.qsub` files |
 | Methods: HDBSCAN clustering | `scripts/hdbscan_benchmark.py` |
 | Methods: Contrastive learning framework | `src/model.py`, `src/losses.py`, `configs/train.yaml`, `configs/experiment/proxy_anchor.yaml` |
 | Methods: Training procedure | `src/train.py`, `configs/train.yaml` |
