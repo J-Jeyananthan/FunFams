@@ -40,5 +40,8 @@ checkpoints/
 # Large local artifacts (keep data out of git unless using Git LFS intentionally)
 *.h5
 *.hdf5
+*.lmdb
+*.pt
+*.npy
 data/
 
