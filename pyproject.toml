@@ -37,7 +37,6 @@ dependencies = [
     "tqdm>=4.62.0",
     "wandb==0.17.9",
     "click>=8.0.0",
-    "biopython>=1.80",
 ]
 
 [project.optional-dependencies]

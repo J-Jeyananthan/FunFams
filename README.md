@@ -160,13 +160,13 @@ python scripts/count_funfam_sizes.py output/hdbscan_results/
 
 ### Step 4 — Contrastive training (Figure 7, Table 2)
 
-Split the training data:
+Split the deduplicated training data (95% train, 5% validation):
 ```bash
 python scripts/datasplit.py \
-    --fasta_file train_deduped.fasta \
-    --mapping_file funfam_labels.txt \
+    --input train_deduped.fasta \
     --output_dir splits/ \
-    --test_size 0.0 --val_size 0.05
+    --val_size 0.05 \
+    --seed 42
 ```
 
 Train the projection head with proxy anchor loss:
