@@ -1,8 +1,5 @@
 # Density-based clustering and contrastive fine-tuning of protein language model embeddings for scalable functional family generation
 
-**Janusan Jeyananthan** — MSci Bioinformatics, UCL (2025–26)  
-Supervisors: Prof. Christine Orengo, David Miller, Dr. Nicola Bordin
-
 ---
 
 ## Project overview
@@ -26,8 +23,8 @@ Benchmarks span three CATH superfamilies: HUPs (3.40.50.620), aldolases (3.20.20
 │   ├── model.py                # ProjectionHead (MLP) + FunfamSupConModel (LightningModule)
 │   ├── data.py                 # LMDB-backed dataset and DataModule
 │   ├── losses.py               # SupConLoss and ProxyAnchorLoss implementations
-│   ├── callbacks.py            # k-NN evaluation callback (FAISS)
-│   ├── faiss_utils.py          # FAISS index build/search utilities
+│   ├── callbacks.py            # Evaluation callbacks (not used in current pipeline)
+│   ├── faiss_utils.py          # FAISS index build/search utilities (optional)
 │   └── utils.py                # Seed, FASTA parsing, label loading helpers
 ├── configs/
 │   ├── train.yaml              # Main Hydra config (data paths, model, training)
